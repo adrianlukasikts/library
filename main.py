@@ -35,3 +35,23 @@ cur.execute("""
 """)
 
 is_finished = False
+while not is_finished:
+    print("1. Dodaj książkę")
+    print("2. Dodaj użytkownika")
+    print("3. Wypożycz książkę")
+    print("4. Zwróć książkę")
+    print("@. Zakończ program")
+    match input():
+        case "1":
+            print("Dodaje książkę")
+        case "2":
+            print("Dodaje użytkownika")
+        case "3":
+            print("Wypożycz książkę")
+        case "4":
+            print("Zwrócono książkę")
+        case "@":
+            is_finished = True
+        case _:
+            print("Niepoprawna komenda")
+
