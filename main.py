@@ -33,7 +33,10 @@ cur.execute("""
     FOREIGN KEY(user_id) REFERENCES users(id)
     ) 
 """)
-
+def add_user(first_name,last_name,email):
+    cur.execute("INSERT INTO users (first_name,last_name,email) VALUES (?,?,?)",(first_name,last_name,email))
+    con.commit()
+# def add_book(name,surname,email):
 is_finished = False
 while not is_finished:
     print("1. Dodaj książkę")
@@ -44,8 +47,10 @@ while not is_finished:
     match input():
         case "1":
             print("Dodaje książkę")
+
         case "2":
             print("Dodaje użytkownika")
+            add_user("a","a","b")
         case "3":
             print("Wypożycz książkę")
         case "4":
