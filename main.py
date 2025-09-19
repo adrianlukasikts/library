@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 con = sqlite3.connect("library.db")
 cur = con.cursor()
 
@@ -64,6 +65,23 @@ while not is_finished:
             add_user(first_name,last_name,email)
         case "3":
             print("Wypożycz książkę")
+            book_id = input("Podaj id książki: ")
+            result = cur.execute("SELECT * FROM books WHERE id=?",(book_id,))
+            if result.fetchone() is None:
+                print("Brak książki")
+                break
+            result2 = cur.execute("SELECT * FROM rented_books WHERE finish_date IS NULL AND book_id = ?",(book_id,))
+            if result2.fetchone() is not None:
+                print("Ksiazka jest wypozyczona")
+                break
+            user_id = input("Podaj id: ")
+            result3 = cur.execute("SELECT * FROM users WHERE id=?",[user_id])
+            if result3.fetchone() is None:
+                print("Nie ma takiego uzytkownika: ")
+                break
+            cur.execute("INSERT INTO rented_books (book_id,user_id,rented_date) VALUES(?,?,?)",(book_id,user_id,datetime.datetime.now()))
+            con.commit()
+
 
         case "4":
             print("Zwrócono książkę")
