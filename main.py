@@ -51,7 +51,10 @@ while not is_finished:
 
         case "2":
             print("Dodaje użytkownika")
-            add_user("a","a","b")
+            first_name = input("First name:")
+            last_name = input("Last name:")
+            email = input("Email:")
+            add_user(first_name,last_name,email)
         case "3":
             print("Wypożycz książkę")
         case "4":
