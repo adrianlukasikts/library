@@ -3,28 +3,27 @@ con = sqlite3.connect("library.db")
 cur = con.cursor()
 
 
-# cur.execute("""
-#     CREATE TABLE  IF NOT EXISTS books (
-#     id int PRIMARY KEY,
-#     title text,
-#     author text,
-#     year int
-#     )
-#
-# """)
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS books (
+    id integer PRIMARY KEY AUTOINCREMENT,
+    title text,
+    author text,
+    year int
+    )
+""")
 
-# cur.execute("""
-#     CREATE TABLE  IF NOT EXISTS users (
-#     id int PRIMARY KEY,
-#     first_name text,
-#     last_name text,
-#     email text
-#     )
-# """)
+cur.execute("""
+    CREATE TABLE  IF NOT EXISTS users (
+    id integer PRIMARY KEY AUTOINCREMENT,
+    first_name text,
+    last_name text,
+    email text
+    )
+""")
 
 cur.execute("""
     CREATE TABLE  IF NOT EXISTS rented_books (
-    id int PRIMARY KEY,
+    id integer PRIMARY KEY AUTOINCREMENT,
     book_id int,
     user_id int,
     rented_date date,
@@ -33,6 +32,8 @@ cur.execute("""
     FOREIGN KEY(user_id) REFERENCES users(id)
     ) 
 """)
+
+
 def add_user(first_name,last_name,email):
     cur.execute("INSERT INTO users (first_name,last_name,email) VALUES (?,?,?)",(first_name,last_name,email))
     con.commit()
