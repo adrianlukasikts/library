@@ -118,6 +118,18 @@ def add_user(first_name, last_name, email):
     cur.execute("INSERT INTO users (first_name,last_name,email) VALUES (?,?,?)", (first_name, last_name, email))
     con.commit()
 
+def get_user_id():
+    user_id = input("Podaj użytkownika id: ")
+    result = cur.execute("SELECT * FROM users WHERE id=?", [user_id])
+    if result.fetchone() is None:
+        return None
+    return user_id
+def get_book_id():
+    book_id = input("Podaj id książki: ")
+    result = cur.execute("SELECT * FROM books WHERE id=?", [book_id])
+    if result.fetchone() is None:
+        return None
+    return book_id
 
 is_finished = False
 while not is_finished:
@@ -126,6 +138,7 @@ while not is_finished:
     print("3. Wypożycz książkę")
     print("4. Zwróć książkę")
     print("5. Stan Należności")
+    print("6. Zapłata Należności")
     print("@. Zakończ program")
     match input():
         case "1":
@@ -142,28 +155,24 @@ while not is_finished:
             add_user(first_name, last_name, email)
         case "3":
             print("Wypożycz książkę")
-            book_id = input("Podaj id książki: ")
-            result = cur.execute("SELECT * FROM books WHERE id=?", (book_id,))
-            if result.fetchone() is None:
+            book_id = get_book_id()
+            if  book_id is None:
                 print("Brak książki")
                 break
             result2 = cur.execute("SELECT * FROM rented_books WHERE finish_date IS NULL AND book_id = ?", (book_id,))
             if result2.fetchone() is not None:
                 print("Ksiazka jest wypozyczona")
                 break
-            user_id = input("Podaj id użytkownika: ")
-            result3 = cur.execute("SELECT * FROM users WHERE id=?", [user_id])
-            if result3.fetchone() is None:
+            user_id = get_user_id()
+            if not user_id:
                 print("Nie ma takiego uzytkownika: ")
                 break
             cur.execute("INSERT INTO rented_books (book_id,user_id,rented_date) VALUES(?,?,?)",
                         (book_id, user_id, now()))
             con.commit()
-
         case "4":
-            book_id = input("Id książki")
-            result = cur.execute("SELECT * FROM books WHERE id=?", (book_id,))
-            if result.fetchone() is None:
+            book_id = get_book_id()
+            if not book_id:
                 print("Brak książki")
                 break
             result2 = cur.execute("SELECT * FROM rented_books WHERE finish_date IS NULL AND book_id = ?", (book_id,))
@@ -171,9 +180,8 @@ while not is_finished:
             if book_info is None:
                 print("Ksiazka jest niewypozyczona")
                 break
-            user_id = input("Podaj użytkownika id: ")
-            result3 = cur.execute("SELECT * FROM users WHERE id=?", [user_id])
-            if result3.fetchone() is None:
+            user_id = get_user_id()
+            if user_id is None:
                 print("Nie ma takiego uzytkownika: ")
                 break
 
@@ -189,15 +197,18 @@ while not is_finished:
 
         case "5":
             print("Stan Należności")
-            user_id = input("Podaj użytkownika id: ")
-            result4 = cur.execute("SELECT * FROM users WHERE id=?", [user_id])
-            if result4.fetchone() is None:
+            user_id = get_user_id()
+            if not user_id:
                 print("Nie ma takiego uzytkownika: ")
                 break
             result5 = cur.execute("SELECT SUM(fee) FROM fees WHERE user_id=?", [user_id])
             print(result5.fetchone()[0])
 
-
+        case "6":
+            user_id = get_user_id()
+            if not user_id:
+                print("Nie ma takiego uzytkownika: ")
+                break
         case "@":
             is_finished = True
         case _:
